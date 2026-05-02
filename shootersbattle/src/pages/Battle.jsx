@@ -4,34 +4,26 @@ import socket from "../services/socket";
 export default function Battle() {
   const [room, setRoom] = useState(null);
   const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
   const [timer, setTimer] = useState(0);
   const [result, setResult] = useState("");
 
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // JOIN BATTLE
   const joinBattle = () => {
     socket.emit("joinBattle", user);
   };
 
+  // SOCKET EVENTS
   useEffect(() => {
 
     socket.on("startBattle", (data) => {
       setRoom(data.roomId);
       setQuestion(data.challenge.question);
-      setTimer(data.time);
-
       startTimer(data.time);
     });
-//     useEffect(() => {
-//   if (timer === 0) {
-//     setResult("⏳ Time Up!");
-//   }
-// }, [timer]);
 
     socket.on("battleResult", (data) => {
-      setResult(`Winner: ${data.winner}`);
+      setResult(`🏆 Winner: ${data.winner}`);
     });
 
     return () => {
@@ -41,7 +33,14 @@ export default function Battle() {
 
   }, []);
 
-  // TIMER
+  // TIMER EFFECT (SEPARATE HOOK ✅)
+  useEffect(() => {
+    if (timer === 0 && room) {
+      setResult("⏳ Time Up!");
+    }
+  }, [timer, room]);
+
+  // TIMER FUNCTION
   const startTimer = (time) => {
     let t = time;
 
@@ -53,28 +52,32 @@ export default function Battle() {
     }, 1000);
   };
 
-  // SUBMIT
-  const submit = () => {
-    socket.emit("submitAnswer", {
-      roomId: room,
-      answer,
-      user,
-    });
-  };
-
   return (
-   <div className="p-6">
+    <div className="p-6">
 
-  <h1 className="text-3xl text-red-400 glow mb-4">
-    ⚔️ Battle Arena
-  </h1>
+      <h1 className="text-3xl text-red-400 mb-4">
+        ⚔️ Battle Arena
+      </h1>
 
-  {result && (
-    <div className="card text-center text-xl text-green-400 glow">
-      {result}
+      {!room && (
+        <button onClick={joinBattle} className="bg-red-500 px-4 py-2">
+          Start Battle
+        </button>
+      )}
+
+      {room && (
+        <>
+          <h2 className="mb-2">{question}</h2>
+          <h3>⏳ Time: {timer}s</h3>
+        </>
+      )}
+
+      {result && (
+        <div className="mt-4 text-green-400 text-xl">
+          {result}
+        </div>
+      )}
+
     </div>
-  )}
-
-</div>
   );
 }
