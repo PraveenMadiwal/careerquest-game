@@ -25,6 +25,14 @@ const battle = require("./battle");
 // CALL ONLY ONCE ✅
 battle(io);
 
+// ROUTES
+const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+const leaderboardRoutes = require("./routes/leaderboardRoutes");
+
+app.use("/api/auth", authRoutes);
+app.use("/api/user", userRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
 // ==========================
 // LEADERBOARD (TEMP MEMORY)
 // ==========================
