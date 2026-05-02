@@ -10,7 +10,6 @@ module.exports = (io) => {
 
     console.log("Battle user:", socket.id);
 
-    // ================= MATCHMAKING =================
     socket.on("joinBattle", (user) => {
 
       if (waitingPlayer) {
@@ -49,8 +48,7 @@ module.exports = (io) => {
       }
     });
 
-    // ================= SUBMIT ANSWER =================
-    socket.on("submitAnswer", async ({ roomId, code, user }) => {
+    socket.on("submitAnswer", async ({ roomId, code, user, language = "js" }) => {
 
       const room = rooms[roomId];
       if (!room || !room.question) return;
@@ -60,7 +58,7 @@ module.exports = (io) => {
       let passedAll = true;
 
       for (let test of testCases) {
-        const output = await runCode(code, test.input);
+        const output = await runCode(code, test.input, language);
 
         if (String(output) !== String(test.output)) {
           passedAll = false;
