@@ -22,3 +22,14 @@ exports.runCode = (userCode, input) => {
     process.stdin.end();
   });
 };
+if (language === "js") {
+  // run node
+}
+
+if (language === "python") {
+  // run python
+}
+
+if (language === "java") {
+  // compile + run java
+}
