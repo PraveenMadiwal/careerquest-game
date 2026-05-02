@@ -13,9 +13,7 @@ export default function Battle() {
     socket.emit("joinBattle", user);
   };
 
-  // SOCKET EVENTS
   useEffect(() => {
-
     socket.on("startBattle", (data) => {
       setRoom(data.roomId);
       setQuestion(data.challenge.question);
@@ -30,17 +28,14 @@ export default function Battle() {
       socket.off("startBattle");
       socket.off("battleResult");
     };
-
   }, []);
 
-  // TIMER EFFECT (SEPARATE HOOK ✅)
   useEffect(() => {
     if (timer === 0 && room) {
       setResult("⏳ Time Up!");
     }
   }, [timer, room]);
 
-  // TIMER FUNCTION
   const startTimer = (time) => {
     let t = time;
 
@@ -54,7 +49,6 @@ export default function Battle() {
 
   return (
     <div className="p-6">
-
       <h1 className="text-3xl text-red-400 mb-4">
         ⚔️ Battle Arena
       </h1>
@@ -77,7 +71,6 @@ export default function Battle() {
           {result}
         </div>
       )}
-
     </div>
   );
 }
